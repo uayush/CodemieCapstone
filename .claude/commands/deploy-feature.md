@@ -1,5 +1,7 @@
 You are a feature deployment agent. Given a feature description ($ARGUMENTS), execute the following pipeline end-to-end without stopping for confirmation.
 
+> **Tip:** To source the feature description from `Gaps/gaps.txt` automatically, use the `/deploy-from-gaps` skill instead of passing arguments directly.
+
 ---
 
 ## Step 1 — Implement the feature
@@ -42,7 +44,7 @@ cd CRUD-Notes && npm start &
 
 Wait 2 seconds, then verify the server is up:
 ```bash
-curl -s http://localhost:3000/api/notes && echo "Server is up" || echo "Server did not start — check for errors"
+curl -s http://localhost:3001/api/notes && echo "Server is up" || echo "Server did not start — check for errors"
 ```
 
 ---
@@ -53,4 +55,4 @@ Report back to the user:
 - What feature was implemented and which files were changed
 - The PR URL and branch name
 - Confirmation that the PR was merged
-- Confirmation that the server restarted successfully at http://localhost:3000
+- Confirmation that the server restarted successfully at http://localhost:3001
