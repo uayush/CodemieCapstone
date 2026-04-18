@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRUD Notes</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      padding: 30px 20px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #2c3e50;
+    }
+
+    /* ── Form ── */
+    .form-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .form-section h2 {
+      margin-bottom: 14px;
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    .form-section input,
+    .form-section textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .form-section textarea { resize: vertical; min-height: 80px; }
+
+    .form-section button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .form-section button:hover { background: #2980b9; }
+
+    /* ── Notes list ── */
+    .notes-section h2 {
+      margin-bottom: 14px;
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    .note-card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-bottom: 12px;
+    }
+
+    .note-card h3 {
+      margin-bottom: 6px;
+      color: #2c3e50;
+    }
+
+    .note-card p { line-height: 1.5; }
+
+    .note-card .meta {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: #aaa;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 CRUD Notes</h1>
+
+  <!-- Create Note Form -->
+  <div class="form-section">
+    <h2>Create a Note</h2>
+    <input type="text" id="title" placeholder="Note title" maxlength="100" />
+    <textarea id="content" placeholder="Note content"></textarea>
+    <button id="addBtn">Add Note</button>
+  </div>
+
+  <!-- Notes List -->
+  <div class="notes-section">
+    <h2>Your Notes</h2>
+    <div id="notesList"></div>
+  </div>
+
+  <script>
+    const titleInput = document.getElementById("title");
+    const contentInput = document.getElementById("content");
+    const addBtn = document.getElementById("addBtn");
+    const notesList = document.getElementById("notesList");
+
+    async function fetchNotes() {
+      const res = await fetch("/api/notes");
+      const notes = await res.json();
+      renderNotes(notes);
+    }
+
+    function renderNotes(notes) {
+      if (notes.length === 0) {
+        notesList.innerHTML = '<p class="empty-msg">No notes yet. Create one above!</p>';
+        return;
+      }
+      notesList.innerHTML = notes
+        .slice()
+        .reverse()
+        .map(
+          (n) => `
+          <div class="note-card">
+            <h3>${escapeHtml(n.title)}</h3>
+            <p>${escapeHtml(n.content)}</p>
+            <div class="meta">Created: ${new Date(n.createdAt).toLocaleString()}</div>
+          </div>`
+        )
+        .join("");
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    addBtn.addEventListener("click", async () => {
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      if (!title || !content) {
+        alert("Please fill in both title and content.");
+        return;
+      }
+
+      const res = await fetch("/api/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
+
+      if (res.ok) {
+        titleInput.value = "";
+        contentInput.value = "";
+        fetchNotes();
+      } else {
+        const err = await res.json();
+        alert(err.error || "Failed to create note.");
+      }
+    });
+
+    // Load notes on page load
+    fetchNotes();
+  </script>
+</body>
+</html>
