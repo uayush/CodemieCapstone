@@ -1,0 +1,20 @@
+=== CRUD-Notes UI Test Report ===
+Date: 2026-04-20T16:01:23.979Z
+App URL: http://localhost:3001
+
+Suite: Login Page
+----------------------------------------
+  [PASS] should show login form on first load (378ms)
+  [PASS] should reject invalid credentials (293ms)
+  [PASS] should login with valid credentials (403ms)
+
+Suite: Notes App
+----------------------------------------
+  [PASS] should create a new note (568ms)
+  [PASS] should show alert when title is empty (965ms)
+  [PASS] should show alert when content is empty (1090ms)
+  [PASS] should display multiple notes in reverse order (916ms)
+
+=== Summary ===
+Total: 7  |  Passed: 7  |  Failed: 0  |  Skipped: 0
+Result: ALL PASSED

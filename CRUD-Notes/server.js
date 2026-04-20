@@ -12,6 +12,24 @@ let nextId = 1;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// POST login
+const VALID_CREDENTIALS = [
+  { username: "test", password: "test" },
+  { username: "admin", password: "admin" },
+];
+
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  const match = VALID_CREDENTIALS.find(
+    (c) => c.username === username && c.password === password
+  );
+  if (match) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ success: false, error: "Either the username or password is wrong. Please try again." });
+  }
+});
+
 // GET all notes
 app.get("/api/notes", (req, res) => {
   res.json(notes);

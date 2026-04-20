@@ -94,9 +94,69 @@
       color: #aaa;
       padding: 20px 0;
     }
+
+    /* ── Login ── */
+    #loginSection {
+      background: #fff;
+      padding: 30px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 360px;
+      margin: 60px auto 0;
+    }
+
+    #loginSection h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    #loginSection input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    #loginSection button {
+      width: 100%;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    #loginSection button:hover { background: #2980b9; }
+
+    #loginError {
+      color: #e74c3c;
+      font-size: 0.88rem;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+
+    #appSection { display: none; }
   </style>
 </head>
 <body>
+
+  <!-- Login Screen -->
+  <div id="loginSection">
+    <h2>📝 CRUD Notes</h2>
+    <input type="text" id="usernameInput" placeholder="Username" />
+    <input type="password" id="passwordInput" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <p id="loginError">Either the username or password is wrong. Please try again.</p>
+  </div>
+
+  <!-- Notes App (shown after login) -->
+  <div id="appSection">
   <h1>📝 CRUD Notes</h1>
 
   <!-- Create Note Form -->
@@ -112,8 +172,40 @@
     <h2>Your Notes</h2>
     <div id="notesList"></div>
   </div>
+  </div><!-- end #appSection -->
 
   <script>
+    // ── Login ──
+    const loginSection = document.getElementById("loginSection");
+    const appSection = document.getElementById("appSection");
+    const usernameInput = document.getElementById("usernameInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginError = document.getElementById("loginError");
+
+    loginBtn.addEventListener("click", async () => {
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      if (res.ok) {
+        loginSection.style.display = "none";
+        appSection.style.display = "block";
+        loginError.style.display = "none";
+        fetchNotes();
+      } else {
+        loginError.style.display = "block";
+      }
+    });
+
+    passwordInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") loginBtn.click();
+    });
+
+    // ── Notes ──
     const titleInput = document.getElementById("title");
     const contentInput = document.getElementById("content");
     const addBtn = document.getElementById("addBtn");
@@ -174,8 +266,7 @@
       }
     });
 
-    // Load notes on page load
-    fetchNotes();
+    // Notes load after login — not on page load
   </script>
 </body>
 </html>

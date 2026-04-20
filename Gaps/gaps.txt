@@ -1,0 +1,5 @@
+1. Missing login page as the initial screen Requirement states that when the Notes App opens, the user must first see a Login Page. Current UI directly shows the notes screen content (CRUD Notes / Create a Note / Add Note / Your Notes), so the required authentication entry screen is missing.
+
+2. Missing username input field Requirement expects a username text input on the Login Page. No username field is visible in the current UI.
+
+3. Missing password input field Requirement expects a password input on the Login Page. No password field is visible in the current UI.

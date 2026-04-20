@@ -1,5 +1,8 @@
 {
     "airun.settings": {
         "workspaceId": "968963e0-ba88-4923-9650-a6eea6bfdfa2"
-    }
+    },
+    "github.copilot.chat.languageContext.typescript.cacheTimeout": 3600000,
+    "diffEditor.maxComputationTime": 3600000,
+    "search.searchOnTypeDebouncePeriod": 3600000
 }

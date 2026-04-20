@@ -4,6 +4,18 @@ You are a feature deployment agent. Given a feature description ($ARGUMENTS), ex
 
 ---
 
+## Step 0 — Pull latest changes
+
+Before doing anything, ensure the local repo is up to date:
+
+```bash
+git pull origin master
+```
+
+If there are merge conflicts, stop and report them to the user before proceeding.
+
+---
+
 ## Step 1 — Implement the feature
 
 Use the /implement-feature skill with the provided feature description:
@@ -12,23 +24,19 @@ Use the /implement-feature skill with the provided feature description:
 
 ---
 
-## Step 2 — Raise a PR
+## Step 2 — Commit and push directly to master
 
-Once the implementation is complete, use the /raise-pr skill to create a branch, commit the changes, and open a pull request:
+Stage only the files that were changed, commit with a clear message, and push straight to master:
 
-> /raise-pr
-
----
-
-## Step 3 — Merge the PR
-
-Once the PR is open, use the /merge-pr skill to squash-merge it and pull the latest master locally:
-
-> /merge-pr
+```bash
+git add <changed files — be explicit, avoid git add -A>
+git commit -m "<short description of what was implemented and why>"
+git push origin master
+```
 
 ---
 
-## Step 4 — Restart the application
+## Step 3 — Restart the application
 
 After master is updated, restart the Node.js server so the new changes are live.
 
@@ -53,6 +61,6 @@ curl -s http://localhost:3001/api/notes && echo "Server is up" || echo "Server d
 
 Report back to the user:
 - What feature was implemented and which files were changed
-- The PR URL and branch name
-- Confirmation that the PR was merged
+- The commit hash and message
+- Confirmation that the push to master succeeded
 - Confirmation that the server restarted successfully at http://localhost:3001
